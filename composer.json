@@ -1,0 +1,21 @@
+{
+  "name": "gudwin/extasy-api",
+  "description": "Front controller for API operations",
+  "authors": [
+    {
+      "name": "Dmitry Shevchenko",
+      "email": "dmitry@dd-team.org"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.0",
+    "catacgc/juice-di-container": "dev-master",
+    "phpunit/phpunit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Extasy\\API\\": "src/",
+      "Extasy\\API\\tests\\": "tests/"
+    }
+  }
+}
