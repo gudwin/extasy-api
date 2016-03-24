@@ -9,7 +9,6 @@
   ],
   "require": {
     "php": ">=5.5.0",
-    "catacgc/juice-di-container": "dev-master",
     "phpunit/phpunit": "*"
   },
   "autoload": {
