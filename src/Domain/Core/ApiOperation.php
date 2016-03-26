@@ -27,5 +27,8 @@ abstract class ApiOperation
         }
         return $this->action();
     }
+    public function addValidator( AbstractValidator $validator ) {
+        $this->validators[] = $validator;
+    }
     abstract protected function action();
 }

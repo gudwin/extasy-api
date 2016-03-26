@@ -12,9 +12,6 @@ class SampleApi extends ApiOperation
         $this->called = true;
         return null;
     }
-    public function addValidator( $validator ) {
-        $this->validators[] = $validator;
-    }
     public function isCalled() {
         return $this->called;
     }
