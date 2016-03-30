@@ -3,11 +3,19 @@
 
 namespace Extasy\API\tests\Domain\Core;
 
+
 use Extasy\API\tests\BaseTest;
 use Extasy\API\Domain\Core\ApiOperationFactory;
 use Extasy\API\tests\SampleRequest;
 class ApiOperationFactoryTest extends BaseTest
 {
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testWithEmptyArgument() {
+        $factory = new ApiOperationFactory( false );
+        $factory->get();
+    }
     public function testWithRealApiOperation() {
         $operation = new SampleApi( new SampleRequest());
         $factory = new ApiOperationFactory( $operation );
