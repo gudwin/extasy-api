@@ -7,22 +7,24 @@ use Extasy\API\Infrastructure\IO\AbstractRequest;
 
 class FieldsValidator implements AbstractValidator
 {
-    protected $fields = null;
-    protected $files = null;
-    public function __construct( array $fields, array $files = []  )
+    /**
+     * @var \Extasy\API\Domain\Validators\FieldsValidatorConfig
+     */
+    protected $config = null;
+    public function __construct( FieldsValidatorConfig $config  )
     {
-        $this->fields = $fields;
-        $this->files = $files;
+        $this->config = $config;
     }
-    public function validate(AbstractRequest $request ) {
+    public function validate() {
         try {
-            foreach ( $this->fields as $row ) {
+            $currentField = '';
+            foreach ( $this->config->fields as $row ) {
                 $currentField = $row;
-                $request->getParam( $row );
+                $this->config->request->getParam( $row );
             }
-            foreach ( $this->files as $row ) {
+            foreach ( $this->config->files as $row ) {
                 $currentField = $row;
-                $request->getFile( $row );
+                $this->config->request->getFile( $row );
             }
         } catch (\Exception $e ) {
             $error = sprintf( 'Unable to find field `%s` in request', $currentField );

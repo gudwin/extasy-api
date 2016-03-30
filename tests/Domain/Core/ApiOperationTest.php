@@ -3,7 +3,6 @@
 
 namespace Extasy\API\tests\Domain\Core;
 
-use Extasy\API\Domain\Validators\FieldsValidator;
 use Extasy\API\tests\BaseTest;
 use Extasy\API\tests\SampleRequest;
 

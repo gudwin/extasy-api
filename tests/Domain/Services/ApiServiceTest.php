@@ -1,11 +1,13 @@
 <?php
 namespace Extasy\API\tests\Domain\Services;
 
+use Extasy\API\Domain\Core\ApiOperationFactory;
 use Extasy\API\tests\BaseTest;
 use Extasy\API\tests\SampleRequest;
 use Extasy\API\tests\SampleOutput;
-use Extasy\API\Domain\Core\RoutesCollection;
-use Extasy\API\Domain\Core\Route;
+use Extasy\API\Domain\Route\RoutesCollection;
+use Extasy\API\Domain\Route\Route;
+use Extasy\API\Domain\Route\RouteConfig;
 use Extasy\API\Domain\Service\ApiService;
 use Extasy\API\Domain\Exceptions\NotFoundException;
 
@@ -32,7 +34,15 @@ class ApiServiceTest extends BaseTest
         $output = new SampleOutput();
         $collection = new RoutesCollection();
 
-        $route = new Route($request, '\\Extasy\\API\\tests\\Domain\\Services\\SampleOperation', '/aaa/:word1', [Route::GET_METHOD]);
+        $config = new RouteConfig();
+        $config->request = $request;
+        $config->operation = new ApiOperationFactory( function () use ($request) {
+            return new SampleOperation( $request);
+        } );
+        $config->methods = Route::GET_METHOD;
+        $config->path = '/aaa/:word1';
+
+        $route = new Route( $config );
         $this->assertTrue( $route->match());
         $collection->add( $route );
 

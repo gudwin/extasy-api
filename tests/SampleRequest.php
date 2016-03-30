@@ -6,7 +6,7 @@ namespace Extasy\API\tests;
 use \RuntimeException;
 use Extasy\API\Domain\Exceptions\ApiException;
 use Extasy\API\Infrastructure\IO\AbstractRequest;
-use Extasy\API\Domain\Core\Route;
+use Extasy\API\Domain\Route\Route;
 
 class SampleRequest implements AbstractRequest
 {

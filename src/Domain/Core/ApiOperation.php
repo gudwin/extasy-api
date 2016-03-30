@@ -11,19 +11,13 @@ abstract class ApiOperation
      */
     protected $validators = [];
 
-    /**
-     * @var AbstractRequest
-     */
-    protected $request = null;
-
-    public function __construct( AbstractRequest $request)
+    public function __construct( )
     {
-        $this->request = $request;
     }
 
     public function exec( ) {
         foreach ( $this->validators as $validator) {
-            $validator->validate( $this->request );
+            $validator->validate( );
         }
         return $this->action();
     }

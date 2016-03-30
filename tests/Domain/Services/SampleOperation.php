@@ -7,9 +7,15 @@ use Extasy\API\Domain\Core\ApiOperation;
 use Extasy\API\Infrastructure\IO\AbstractRequest;
 class SampleOperation extends ApiOperation
 {
+    /**
+     * @var AbstractRequest
+     */
+    protected $request;
+
     public function __construct(AbstractRequest $request)
     {
-        parent::__construct($request);
+        $this->request = $request;
+        parent::__construct();
     }
 
     protected function action() {

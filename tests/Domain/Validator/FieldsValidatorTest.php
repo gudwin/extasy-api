@@ -1,9 +1,11 @@
 <?php
 namespace Extasy\API\tests\Domain\Validator;
 
+use \Exception;
 use Extasy\API\tests\BaseTest;
 use Extasy\API\tests\SampleRequest;
 use Extasy\API\Domain\Validators\FieldsValidator;
+use Extasy\API\Domain\Validators\FieldsValidatorConfig;
 
 
 class FieldsValidatorTest extends BaseTest
@@ -13,16 +15,23 @@ class FieldsValidatorTest extends BaseTest
         foreach ( $testsData as $testData ) {
             $fields = isset( $testData['fields'] ) ? $testData['fields'] : [];
             $files = isset( $testData['files'] ) ? $testData['files'] : [];
-            $validator = new FieldsValidator( $fields, $files);
+
+            $config = new FieldsValidatorConfig();
+            $config->fields = $fields;
+            $config->files = $files;
+
             $request = new SampleRequest( $testData['request']);
+            $config->request = $request;
+
+            $validator = new FieldsValidator( $config );
 
             $errorMsg = sprintf('%s:%s:%s', print_r( $fields, true), print_r($files, true),print_r( $testData['request'], true ));
             try {
-                $validator->validate( $request );
+                $validator->validate( );
                 if ( !$testData['result'] ) {
                     $this->fail( $errorMsg );
                 }
-            } catch ( \Exception $e) {
+            } catch ( Exception $e) {
                 if ( $testData['result']) {
                     $this->fail( $errorMsg );
                 }

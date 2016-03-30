@@ -4,7 +4,7 @@ namespace Extasy\API\Domain\Service;
 use Extasy\API\Infrastructure\IO\AbstractRequest;
 use Extasy\API\Infrastructure\IO\AbstractOutput;
 use Extasy\API\Domain\Core\OutputError;
-use Extasy\API\Domain\Core\RoutesCollection;
+use Extasy\API\Domain\Route\RoutesCollection;
 use Extasy\API\Domain\Exceptions\ApiException;
 
 

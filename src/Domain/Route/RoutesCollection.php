@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Extasy\API\Domain\Core;
+namespace Extasy\API\Domain\Route;
 
 use Extasy\API\Infrastructure\IO\AbstractRequest;
 use Extasy\API\Domain\Exceptions\NotFoundException;

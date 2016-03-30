@@ -1,8 +1,9 @@
 <?php
 
 
-namespace Extasy\API\Domain\Core;
+namespace Extasy\API\Domain\Route;
 
+use Extasy\API\Domain\Core\ApiOperationFactory;
 use Extasy\API\Infrastructure\IO\AbstractRequest;
 use Extasy\API\Domain\Exceptions\ForbiddenException;
 use Extasy\API\Domain\Exceptions\NotFoundException;
@@ -14,25 +15,14 @@ class Route
     const PUT_METHOD = 'PUT';
     const DELETE_METHOD = 'DELETE';
 
-    protected $alias = '';
-    protected $path = '';
-    protected $apiOperation = '';
-    protected $methods = [];
     /**
-     * @var AbstractRequest
+     * @var RouteConfig
      */
-    protected $request = [];
+    protected $config = null;
 
-    public function __construct(AbstractRequest $request, $apiOperation, $path, $methods, $alias = '')
+    public function __construct(RouteConfig $config)
     {
-        $this->request = $request;
-        $this->apiOperation = $apiOperation;
-        $this->path = $path;
-        if ( is_scalar( $methods )) {
-            $methods = [ $methods ];
-        }
-        $this->methods = $methods;
-        $this->alias = $alias;
+        $this->config = $config;
     }
 
     /**
@@ -40,13 +30,13 @@ class Route
      */
     public function match()
     {
-        $result = $this->isMethodSupported($this->request->getMethod()) && $this->testPath($this->request->getPath());
+        $result = $this->isMethodSupported($this->config->request->getMethod()) && $this->testPath($this->config->request->getPath());
 
         return $result;
     }
 
     /**
-     * @return ApiOperation
+     * @return \Extasy\API\Domain\Core\ApiOperation
      */
     public function getOperation()
     {
@@ -54,9 +44,10 @@ class Route
 
         $data = $this->parsePathVariables();
 
-        $request = $this->request->extendWithParams( $data );
+        $this->config->request->extendWithParams($data);
 
-        $operation = new $this->apiOperation( $request );
+
+        $operation = $this->config->operation->get();
 
         return $operation;
 
@@ -64,33 +55,22 @@ class Route
 
     public function getAlias()
     {
-        return $this->alias;
+        return $this->config->alias;
     }
 
     private function isMethodSupported($methodName)
     {
-        return in_array($methodName, $this->methods);
+        return in_array($methodName, $this->config->methods);
     }
 
-    private function getRegExp()
-    {
-        $result = '@' . $this->path . '@si';
-        // Replace wildcard
-        $result = str_replace('*', '(.*)', $result);
-        //
-        $result = preg_replace('/:(\w+)/', '([\w-\.]+)', $result);
-
-        //
-        return $result;
-    }
 
     private function parsePathVariables()
     {
         $regExp = $this->getRegExp();
-        preg_match($regExp, $this->request->getPath(), $matches);
-        preg_match_all("/(\*)|:([\w-]+)/", $this->path, $argument_keys);
+        preg_match($regExp, $this->config->request->getPath(), $matches);
+        preg_match_all("/(\*)|:([\w-]+)/", $this->config->path, $argument_keys);
         //
-        $params = $this->request->getParams();
+        $params = $this->config->request->getParams();
         // grab array with matches
         $argument_keys = $argument_keys[0];
         //
@@ -113,8 +93,6 @@ class Route
                         $params[$name] = $row;
                     }
                 }
-
-
             }
         }
 
@@ -123,8 +101,9 @@ class Route
 
     private function testIfOperationExists()
     {
-        if (!class_exists($this->apiOperation)) {
-            $error = sprintf('Api operation class `%s` not found ', $this->apiOperation);
+        $valid = is_object($this->config->operation) && ($this->config->operation instanceof ApiOperationFactory);
+        if ( !$valid ) {
+            $error = sprintf('Api operation attribute not found ');
             throw new NotFoundException($error);
         }
     }
@@ -134,5 +113,15 @@ class Route
         return preg_match($this->getRegExp(), $path);
     }
 
+    private function getRegExp()
+    {
+        $result = '@' . $this->config->path . '@si';
+        // Replace wildcard
+        $result = str_replace('*', '(.*)', $result);
+        //
+        $result = preg_replace('/:(\w+)/', '([\w-\.]+)', $result);
 
+        //
+        return $result;
+    }
 }

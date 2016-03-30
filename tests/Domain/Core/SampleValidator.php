@@ -8,7 +8,7 @@ use Extasy\API\Infrastructure\IO\AbstractRequest;
 class SampleValidator implements AbstractValidator
 {
     protected $called;
-    public function validate(AbstractRequest $request)
+    public function validate( )
     {
         $this->called = true;
     }
