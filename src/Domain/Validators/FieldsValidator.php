@@ -4,7 +4,7 @@ namespace Extasy\API\Domain\Validators;
 use Extasy\API\Domain\Core\AbstractValidator;
 use Extasy\API\Domain\Exceptions\ValidateException;
 use Extasy\API\Infrastructure\IO\AbstractRequest;
-
+use Extasy\API\Domain\Exceptions\NotFoundException;
 class FieldsValidator implements AbstractValidator
 {
     /**
@@ -13,6 +13,9 @@ class FieldsValidator implements AbstractValidator
     protected $config = null;
     public function __construct( FieldsValidatorConfig $config  )
     {
+        if ( !is_object( $config->request) || !$config->request instanceof AbstractRequest) {
+            throw new NotFoundException('`Request` argument is mandatory and should be an instance of AbstractRequest class');
+        }
         $this->config = $config;
     }
     public function validate() {

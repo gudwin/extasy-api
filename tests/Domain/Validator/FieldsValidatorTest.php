@@ -7,39 +7,54 @@ use Extasy\API\tests\SampleRequest;
 use Extasy\API\Domain\Validators\FieldsValidator;
 use Extasy\API\Domain\Validators\FieldsValidatorConfig;
 
-
 class FieldsValidatorTest extends BaseTest
 {
-    public function testValidation() {
+    /**
+     * @expectedException \Extasy\API\Domain\Exceptions\NotFoundException
+     */
+    public function testConfigWithoutRequest()
+    {
+        $config = new FieldsValidatorConfig();
+        $config->fields = ['id'];
+        $config->request = 'yoyoyo';
+        $validator = new FieldsValidator($config);
+        $validator->validate();
+    }
+
+    public function testValidation()
+    {
         $testsData = $this->getSampleTestData();
-        foreach ( $testsData as $testData ) {
-            $fields = isset( $testData['fields'] ) ? $testData['fields'] : [];
-            $files = isset( $testData['files'] ) ? $testData['files'] : [];
+        foreach ($testsData as $testData) {
+            $fields = isset($testData['fields']) ? $testData['fields'] : [];
+            $files = isset($testData['files']) ? $testData['files'] : [];
 
             $config = new FieldsValidatorConfig();
             $config->fields = $fields;
             $config->files = $files;
 
-            $request = new SampleRequest( $testData['request']);
+            $request = new SampleRequest($testData['request']);
             $config->request = $request;
 
-            $validator = new FieldsValidator( $config );
+            $validator = new FieldsValidator($config);
 
-            $errorMsg = sprintf('%s:%s:%s', print_r( $fields, true), print_r($files, true),print_r( $testData['request'], true ));
+            $errorMsg = sprintf('%s:%s:%s', print_r($fields, true), print_r($files, true),
+                print_r($testData['request'], true));
             try {
-                $validator->validate( );
-                if ( !$testData['result'] ) {
-                    $this->fail( $errorMsg );
+                $validator->validate();
+                if (!$testData['result']) {
+                    $this->fail($errorMsg);
                 }
-            } catch ( Exception $e) {
-                if ( $testData['result']) {
-                    $this->fail( $errorMsg );
+            } catch (Exception $e) {
+                if ($testData['result']) {
+                    $this->fail($errorMsg);
                 }
             }
 
         }
     }
-    protected function getSampleTestData() {
+
+    protected function getSampleTestData()
+    {
         $abcParams = [
             'a' => 1,
             'b' => 1,
@@ -57,14 +72,14 @@ class FieldsValidatorTest extends BaseTest
             ],
             [
                 'request' => [],
-                'fields' => ['a','b'],
+                'fields' => ['a', 'b'],
                 'result' => false
             ],
             [
                 'request' => [
                     'params' => $abcParams,
                 ],
-                'fields' => ['a','b'],
+                'fields' => ['a', 'b'],
                 'result' => true
             ],
             [
@@ -77,21 +92,21 @@ class FieldsValidatorTest extends BaseTest
 
             [
                 'request' => [],
-                'files' => ['a','b'],
+                'files' => ['a', 'b'],
                 'result' => false
             ],
             [
                 'request' => [
                     'files' => $efFiles,
                 ],
-                'files' => ['e','f'],
+                'files' => ['e', 'f'],
                 'result' => true
             ],
             [
                 'request' => [
                     'files' => $efFiles,
                 ],
-                'fields' => ['e','f','g'],
+                'fields' => ['e', 'f', 'g'],
                 'result' => false
             ],
             [
@@ -104,6 +119,7 @@ class FieldsValidatorTest extends BaseTest
                 'result' => true,
             ]
         ];
+
         return $testsData;
     }
 }
