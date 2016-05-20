@@ -7,7 +7,7 @@ use Extasy\API\Domain\Core\ApiOperationFactory;
 use Extasy\API\Infrastructure\IO\AbstractRequest;
 use Extasy\API\Domain\Exceptions\ForbiddenException;
 use Extasy\API\Domain\Exceptions\NotFoundException;
-
+use \InvalidArgumentException;
 class Route
 {
     const GET_METHOD = 'GET';
@@ -22,7 +22,11 @@ class Route
 
     public function __construct(RouteConfig $config)
     {
+        if ( empty( $config->request ) ) {
+            throw new InvalidArgumentException('Request method should be defined');
+        }
         $this->config = $config;
+
     }
 
     /**
@@ -30,6 +34,7 @@ class Route
      */
     public function match()
     {
+
         $result = $this->isMethodSupported($this->config->request->getMethod()) && $this->testPath($this->config->request->getPath());
 
         return $result;

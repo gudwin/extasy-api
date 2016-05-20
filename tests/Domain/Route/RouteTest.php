@@ -9,6 +9,7 @@ use Extasy\API\Domain\Route\Route;
 use Extasy\API\Domain\Core\ApiOperationFactory;
 
 
+
 class RouteTest extends BaseTest
 {
     const SAMPLE_PATH = '/my-path';
@@ -27,6 +28,13 @@ class RouteTest extends BaseTest
         ]);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testRouteWithoutRequest() {
+        $config = new RouteConfig();
+        $route = new Route($config);
+    }
     public function testMatch()
     {
         $data = [
