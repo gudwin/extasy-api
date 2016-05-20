@@ -34,7 +34,6 @@ class ApiService
             $result = $route->getOperation();
             $result = $result->exec( );
         } catch (ApiException $e ) {
-            // log message
             $result = null;
             $error = new OutputError(__CLASS__, (string)$e);
             $this->output->addError( $error );
